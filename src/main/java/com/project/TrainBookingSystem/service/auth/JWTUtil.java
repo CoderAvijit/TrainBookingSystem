@@ -1,7 +1,4 @@
 package com.project.TrainBookingSystem.service.auth;
-
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,9 +11,8 @@ import org.joda.time.DateTime;
 
 @Service
 public class JWTUtil {
-  private static final Logger LOG = LoggerFactory.getLogger(JWTUtil.class);
-  private static String SECRET_KEY="abcd";
-  private static String ISSUER="admin";
+  private static String SECRET_KEY="tr@1nb00k1ngsystem";
+  private static String ISSUER="@dm1n";
   private static final int TOKEN_EXPIRY_TIME = 300;
 
 

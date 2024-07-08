@@ -69,11 +69,11 @@ public class UserController {
 	}
 	
 	@GetMapping(value="/traindetails")
-	public GenericResponse getTrainDetails(@RequestHeader HttpHeaders headers, @RequestBody UserModel userModel) {
+	public GenericResponse getTrainDetails(@RequestHeader HttpHeaders headers) {
 		LOG.info("Execution started for getTrainDetails");
 		GenericResponse genericResponse= new GenericResponse();
 		try {
-			genericResponse = authentication.authenticate(headers,userModel);
+			genericResponse = authentication.authenticate(headers);
 			List<Object> paramList = new ArrayList<>();
 			if(genericResponse.getOutputCode()==200) {
 				Object trainDetails = DBHelper.executeFunction(QueryConstants.GET_TRAIN_DETAILS_QUERY,paramList);
@@ -136,6 +136,36 @@ public class UserController {
 			genericResponse.setOutputDescription("Error occured");
 			genericResponse.setOutputData(null);
 			return genericResponse;
+		}
+		return genericResponse;
+	}
+	
+	@PostMapping("/fetchTrainForBook")
+	public GenericResponse getTrainForBook(@RequestHeader HttpHeaders headers, @RequestBody TrainDetails train) {
+		LOG.info("Execution started for getTrainForBook");
+		GenericResponse genericResponse= new GenericResponse();
+		try {
+			genericResponse = authentication.authenticate(headers);
+			List<Object> paramList = new ArrayList<>();
+			paramList.add(train.getTraiinId());
+			if(genericResponse.getOutputCode()==200) {
+				Object trainDetails = DBHelper.executeFunction(QueryConstants.POPULATE_TRAIN_FOR_BOOK,paramList);
+				JsonNode nodeResult = mapper.readTree(trainDetails.toString());
+				LOG.info("Fetched TrainDetails : "+nodeResult);
+				genericResponse.setOutputData(nodeResult);
+				genericResponse.setOutputCode(200);
+				genericResponse.setOutputDescription("Train details fetched successfully");
+				
+			}else {
+				genericResponse.setOutputCode(400);
+				genericResponse.setOutputDescription("Bad Request");
+				genericResponse.setOutputData(null);
+			}
+			
+		}catch(Exception e) {
+			LOG.error("Exception occured while fetching the train details : ".concat(e.getMessage()));
+			genericResponse.setOutputDescription("Exception occured while fetching the train details : "
+					.concat(e.getMessage()));
 		}
 		return genericResponse;
 	}
